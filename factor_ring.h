@@ -11,47 +11,44 @@
 
 using namespace std;
 
-
 //////////////////////////////
-// factor_ring.h
+// Factor Ring Element
 //////////////////////////////
 
-// Template class representing an element of the factor ring R[x]/(mod_poly).
-// Internally, the element is stored as a polynomial reduced modulo mod_poly.
 template<typename T>
 class FactorRingElement {
 public:
-    Polynomial<T> poly;     // The polynomial representing the element.
-    Polynomial<T> mod_poly; // The modulus polynomial (the ideal).
+    Polynomial<T> poly;     // Многочлен, представляющий элемент.
+    Polynomial<T> mod_poly; // Модульный многочлен (идеал).
 
     FactorRingElement(const Polynomial<T>& poly, const Polynomial<T>& mod_poly)
         : mod_poly(mod_poly)
     {
         this->poly = poly % mod_poly;
     }
-    // Default constructor (unit element).
+    // Конструктор по умолчанию (единичный элемент).
     FactorRingElement() : mod_poly(Polynomial<T>(T(1))) {}
 
     FactorRingElement operator+(const FactorRingElement& other) const {
         if(mod_poly.coeffs != other.mod_poly.coeffs)
-            throw runtime_error("Different moduli in factor ring addition");
+            throw runtime_error("Different modules in the quotient ring when added together");
         return FactorRingElement(poly + other.poly, mod_poly);
     }
     
     FactorRingElement operator-(const FactorRingElement& other) const {
         if(mod_poly.coeffs != other.mod_poly.coeffs)
-            throw runtime_error("Different moduli in factor ring subtraction");
+            throw runtime_error("Different modules in the factor ring during subtraction");
         return FactorRingElement(poly - other.poly, mod_poly);
     }
     
     FactorRingElement operator*(const FactorRingElement& other) const {
         if(mod_poly.coeffs != other.mod_poly.coeffs)
-            throw runtime_error("Different moduli in factor ring multiplication");
+            throw runtime_error("Different modules in the factor ring during multiplication");
         return FactorRingElement(poly * other.poly, mod_poly);
     }
     
-    // Extended Euclidean algorithm for polynomials:
-    // finds x and y such that a*x + b*y == gcd(a, b)
+    // Расширенный алгоритм Евклида для многочленов:
+    // Находит x и y такие, что a*x + b*y == gcd(a, b)
     static tuple<Polynomial<T>, Polynomial<T>, Polynomial<T>> extended_gcd(
         const Polynomial<T>& a, const Polynomial<T>& b)
     {
@@ -63,19 +60,18 @@ public:
         return {g, y, x - q * y};
     }
     
-    // Compute the inverse in the factor ring if it exists.
-    // The inverse exists if gcd(poly, mod_poly) is a nonzero constant polynomial.
+    // Вычисляет обратный элемент в фактор-кольце, если он существует.
     FactorRingElement inv() const {
         auto [g, x, y] = extended_gcd(poly, mod_poly);
         if(g.degree() != 0)
-            throw runtime_error("Inverse does not exist in this factor ring");
-        T inv_g = g.coeffs[0].inv(); // Assuming that T provides an inv() method.
+            throw runtime_error("The inverse element does not exist in this quotient ring.");
+        T inv_g = g.coeffs[0].inv(); // Предполагается, что тип T имеет метод inv()
         return FactorRingElement(x * Polynomial<T>(inv_g), mod_poly);
     }
     
     FactorRingElement operator/(const FactorRingElement& other) const {
         if(mod_poly.coeffs != other.mod_poly.coeffs)
-            throw runtime_error("Different moduli in factor ring division");
+            throw runtime_error("Different modules in the quotient ring during division");
         return *this * other.inv();
     }
     
@@ -101,8 +97,6 @@ public:
 // Irreducibility Check
 //////////////////////////////
 
-// A simple brute-force irreducibility check over a finite field F (with coefficients of type T).
-// This function assumes that T (for example, ModInt<...>) provides a static constant MOD_VALUE.
 template<typename T>
 bool is_irreducible(const Polynomial<T>& poly) {
     int deg = poly.degree();
@@ -111,18 +105,16 @@ bool is_irreducible(const Polynomial<T>& poly) {
     if(deg == 1)
         return true;
     int field_mod = T::MOD_VALUE;
-    // Check for any nontrivial factor (of degree from 1 up to deg/2).
     for (int d = 1; d <= deg / 2; d++) {
         vector<T> coeffs(d, T(0));
-        // Use a recursive lambda to generate all monic candidate divisors of degree d.
         function<bool(int)> gen = [&](int pos) -> bool {
             if (pos == d) {
                 vector<T> candidate_coeffs = coeffs;
-                candidate_coeffs.push_back(T(1)); // force monic coefficient
+                candidate_coeffs.push_back(T(1)); // делаем ведущий коэффициент равным 1
                 Polynomial<T> candidate(candidate_coeffs);
                 auto rem = poly.divmod(candidate).second;
                 if(rem.degree() < 0)
-                    return true; // candidate divides poly exactly -> poly is reducible.
+                    return true; // найден делитель -> многочлен приводим.
                 return false;
             }
             for (int i = 0; i < field_mod; i++) {
@@ -133,48 +125,66 @@ bool is_irreducible(const Polynomial<T>& poly) {
             return false;
         };
         if(gen(0))
-            return false; // found a divisor, so poly is reducible.
+            return false;
     }
     return true;
 }
 
 //////////////////////////////
-// Helper function to read a polynomial from input.
+// Функции ввода многочленов
 //////////////////////////////
 
-// The user is prompted first for the number of coefficients, and then each coefficient
-// (starting with the constant term, i.e. coefficient for x^0).
+// Оригинальная функция для ввода многочлена (коэффициенты вводятся начиная с константного члена)
 template<typename T>
 Polynomial<T> read_polynomial() {
     int n;
     cout << "Enter the number of coefficients: ";
     cin >> n;
-    vector<T> coeff(n);
+    vector<T> coeffs(n);
     cout << "Enter the coefficients (constant term first): ";
     for (int i = 0; i < n; i++) {
         int tmp;
         cin >> tmp;
-        coeff[i] = T(tmp);
+        coeffs[i] = T(tmp);
     }
-    return Polynomial<T>(coeff);
+    return Polynomial<T>(coeffs);
+}
+
+// Функция для ввода многочлена с ограничением по количеству коэффициентов (не более max_coeffs)
+template<typename T>
+Polynomial<T> read_polynomial_restricted(int max_coeffs) {
+    int n;
+    do {
+        cout << "Enter the number of coefficients (max " << max_coeffs << "): ";
+        cin >> n;
+        if(n > max_coeffs)
+            cout << "Error: the number of coefficients should not exceed " << max_coeffs << ".\n";
+    } while(n > max_coeffs);
+    vector<T> coeffs(n);
+    cout << "Enter the coefficients (constant term first): ";
+    for (int i = 0; i < n; i++) {
+        int tmp;
+        cin >> tmp;
+        coeffs[i] = T(tmp);
+    }
+    return Polynomial<T>(coeffs);
 }
 
 //////////////////////////////
 // Factor Ring Operations (Field Extension F[x]/(f(x)))
 //////////////////////////////
 
-// Sets up the factor ring F[x]/(f(x)) over a given prime field F = Z_p.
-// The user is prompted for an irreducible polynomial f(x) over F and then for two elements.
-// Operations like addition, subtraction, multiplication, inversion, division and exponentiation are performed.
 template<int P>
 void run_factor_ring() {
     typedef ModInt<P> Field;
     cout << "\nFactor ring operations over field Z" << P << ":\n";
+    
+    // Ввод многочлена f(x) для факторизации и проверка его неприводимости.
     Polynomial<Field> f;
     bool irreducible_valid = false;
     while(!irreducible_valid) {
         cout << "Enter the polynomial f(x) (coefficients as constant term first):\n";
-        f = read_polynomial<Field>();
+        f = read_polynomial<Field>();  
         if(is_irreducible(f)) {
             irreducible_valid = true;
         } else {
@@ -182,29 +192,67 @@ void run_factor_ring() {
                  << ". Please enter an irreducible polynomial.\n";
         }
     }
-    cout << "Using factor ring F[x]/(f(x)) where F = Z" << P << ":\n";
-    cout << "Enter the first element (polynomial with coefficients in Z" << P << "):\n";
-    Polynomial<Field> a = read_polynomial<Field>();
-    cout << "Enter the second element:\n";
-    Polynomial<Field> b = read_polynomial<Field>();
+    
+    int n = f.degree();
+    cout << "\nYou entered a polynomial f(x) = " << f << " degree " << n << ".\n";
+    //cout << "Элементы фактор-кольца будут иметь вид (a + b*x + ...), где степень многочлена не превышает " << n - 1 << ".\n";
+    
+    // Ввод элементов фактор-кольца с ограничением по степени
+    cout << "\nEnter the first element of the quotient ring:\n";
+    Polynomial<Field> a = read_polynomial_restricted<Field>(n);
+    cout << "Enter the second element of the quotient ring:\n";
+    Polynomial<Field> b = read_polynomial_restricted<Field>(n);
+    
     FactorRingElement<Field> elem1(a, f);
     FactorRingElement<Field> elem2(b, f);
     
-    cout << "Element A = " << elem1 << "\n";
+    cout << "\nElement A = " << elem1 << "\n";
     cout << "Element B = " << elem2 << "\n";
     
-    cout << "\nA + B = " << (elem1 + elem2) << "\n";
-    cout << "A - B = " << (elem1 - elem2) << "\n";
-    cout << "A * B = " << (elem1 * elem2) << "\n";
-    try {
-        FactorRingElement<Field> invA = elem1.inv();
-        cout << "Inverse of A = " << invA << "\n";
-        cout << "A / B = " << (elem1 / elem2) << "\n";
-    } catch(const runtime_error& e) {
-        cout << "Error computing inverse: " << e.what() << "\n";
+    // Меню операций над элементами фактор-кольца
+    cout << "\nChoose operation:\n";
+    cout << "1. A + B\n";
+    cout << "2. A - B\n";
+    cout << "3. A * B\n";
+    cout << "4. A / B\n";
+    cout << "5. Inverse element A\n";
+    cout << "6. A^n (exponentiation)\n";
+    cout << "Your choice: ";
+    int op;
+    cin >> op;
+    switch(op) {
+        case 1:
+            cout << "\nA + B = " << (elem1 + elem2) << "\n";
+            break;
+        case 2:
+            cout << "\nA - B = " << (elem1 - elem2) << "\n";
+            break;
+        case 3:
+            cout << "\nA * B = " << (elem1 * elem2) << "\n";
+            break;
+        case 4:
+            try {
+                cout << "\nA / B = " << (elem1 / elem2) << "\n";
+            } catch(const runtime_error &e) {
+                cout << "\nDivision error: " << e.what() << "\n";
+            }
+            break;
+        case 5:
+            try {
+                cout << "\nInverse element A = " << elem1.inv() << "\n";
+            } catch(const runtime_error &e) {
+                cout << "\nError when calculating the inverse element: " << e.what() << "\n";
+            }
+            break;
+        case 6: {
+            int exponent;
+            cout << "Enter a non-negative integer power: ";
+            cin >> exponent;
+            cout << "\nA^" << exponent << " = " << elem1.pow(exponent) << "\n";
+            break;
+        }
+        default:
+            cout << "\nUnknown operation!\n";
+            break;
     }
-    int exp;
-    cout << "Enter an exponent for computing A^exp: ";
-    cin >> exp;
-    cout << "A^" << exp << " = " << elem1.pow(exp) << "\n";
 }
