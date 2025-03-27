@@ -210,7 +210,7 @@ void run_factor_ring() {
     cout << "Element B = " << elem2 << "\n";
     
     // Меню операций над элементами фактор-кольца
-    cout << "\nChoose operation:\n";
+    std::cout << "\nChoose operation:\n";
     cout << "1. A + B\n";
     cout << "2. A - B\n";
     cout << "3. A * B\n";
