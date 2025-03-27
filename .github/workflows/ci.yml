@@ -2,13 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [ main ]
 
 jobs:
   build:
@@ -17,24 +13,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install dependencies
+      - name: Setup build environment
         run: |
-          sudo apt update
-          sudo apt install -y cmake g++ ninja-build
-
-      - name: Install Google Test
-        run: |
-          git clone https://github.com/google/googletest.git
-          cd googletest
-          mkdir build && cd build
-          cmake .. -DCMAKE_INSTALL_PREFIX=/usr
-          sudo cmake --build . --target install
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ ninja-build
 
       - name: Configure CMake
         run: |
-          mkdir -p build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -G "Ninja"
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -G "Ninja" ..
 
       - name: Build project
         run: |
@@ -47,7 +34,7 @@ jobs:
           ctest --output-on-failure
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
-          name: compiled-binaries
+          name: build-artifacts
           path: build/
