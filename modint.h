@@ -78,4 +78,3 @@ struct ModInt {
     friend bool operator!=(const ModInt &a, const ModInt &b) {
         return a.value != b.value;
     }
-};
