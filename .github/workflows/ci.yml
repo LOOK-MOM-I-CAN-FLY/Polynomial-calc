@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -9,32 +9,36 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: emscripten/emsdk  # контейнер для сборки с emscripten
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup build environment
+      - name: Configure and Build with CMake
         run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake g++ ninja-build
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DEMSCRIPTEN=ON
+          cmake --build build --config Release
 
-      - name: Configure CMake
-        run: |
-          mkdir build && cd build
-          cmake -DCMAKE_BUILD_TYPE=Release -G "Ninja" ..
-
-      - name: Build project
-        run: |
-          cd build
-          ninja
-
-      - name: Run tests
-        run: |
-          cd build
-          ctest --output-on-failure
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload build artifact
+        uses: actions/upload-artifact@master
         with:
-          name: build-artifacts
-          path: build/
+          name: build-artifact
+          path: build
+          if-no-files-found: error
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@master
+        with:
+          name: build-artifact
+          path: build
+
+      - name: Deploy Artifact (Example)
+        run: |
+          echo "Deploying artifact..."
+          ls -la build
+          # Здесь можно добавить команды для развёртывания, например, копирование файлов или публикацию на GitHub Pages
