@@ -34,7 +34,7 @@ jobs:
           ctest --output-on-failure
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
           path: build/
