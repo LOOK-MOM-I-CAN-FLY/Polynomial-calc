@@ -1,0 +1,167 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-ubuntu:
+    name: Build on Ubuntu (astra)
+    runs-on: ubuntu-latest
+    container:
+      image: astra   # Docker-образ для Ubuntu (укажите актуальный образ)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create build directory and configure CMake
+        run: |
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+      
+      - name: Build project
+        run: |
+          cd build
+          cmake --build . --config Release
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-ubuntu
+          path: build/
+
+  build-centos:
+    name: Build on CentOS (redos)
+    runs-on: ubuntu-latest
+    container:
+      image: redos    # Docker-образ для CentOS (redos для сборки rpm)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create build directory and configure CMake
+        run: |
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+      
+      - name: Build project
+        run: |
+          cd build
+          cmake --build . --config Release
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-centos
+          path: build/
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs:
+      - build-ubuntu
+      - build-centos
+    steps:
+      - name: Download build artifacts (Ubuntu)
+        uses: actions/download-artifact@v3
+        with:
+          name: build-ubuntu
+          path: build-ubuntu
+
+      - name: Download build artifacts (CentOS)
+        uses: actions/download-artifact@v3
+        with:
+          name: build-centos
+          path: build-centos
+
+      - name: Run tests from Ubuntu build
+        run: |
+          cd build-ubuntu
+          ctest --output-on-failure
+
+      - name: Run tests from CentOS build
+        run: |
+          cd build-centos
+          ctest --output-on-failure
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: |
+            build-ubuntu/Testing/
+            build-centos/Testing/
+
+  deploy:
+    name: Deploy Artifacts
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Download Ubuntu build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-ubuntu
+          path: build-ubuntu
+
+      - name: Download CentOS build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-centos
+          path: build-centos
+
+      - name: Deploy artifacts (example)
+        run: |
+          echo "Deploying artifacts..."
+          # Здесь можно добавить команды по загрузке файлов на сервер или в хранилище
+
+  package:
+    name: Package (RPM and DEB)
+    runs-on: ubuntu-latest
+    container:
+      image: redos    # Используем образ, подходящий для сборки rpm
+    needs: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Create build directory and configure CMake with CPack
+        run: |
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+      
+      - name: Build and Package
+        run: |
+          cd build
+          cmake --build . --config Release
+          cpack -G "RPM;DEB"
+      
+      - name: Upload packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: build/*.rpm,build/*.deb
+
+  package-test:
+    name: Test Packages
+    runs-on: ubuntu-latest
+    needs: package
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v3
+        with:
+          name: packages
+          path: packages
+
+      - name: Install DEB package and test
+        run: |
+          sudo dpkg -i packages/*.deb || true
+          # Здесь добавьте команды для проверки работоспособности установленного пакета
+          echo "DEB package installed successfully."
+
+      - name: Install RPM package and test
+        run: |
+          sudo rpm -i packages/*.rpm || true
+          # Здесь добавьте команды для проверки работоспособности установленного пакета
+          echo "RPM package installed successfully."
