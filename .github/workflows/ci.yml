@@ -1,0 +1,212 @@
+name: Polynomial Calculator CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Стадия сборки
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ubuntu, centos]
+        include:
+          - platform: ubuntu
+            container: 'astra:latest'
+          - platform: centos
+            container: 'redos:latest'
+    
+    container:
+      image: ${{ matrix.container }}
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+    
+    - name: Install dependencies
+      run: |
+        if [ "${{ matrix.platform }}" = "ubuntu" ]; then
+          apt-get update && apt-get install -y cmake g++ make
+        else
+          yum install -y cmake gcc-c++ make
+        fi
+    
+    - name: Configure CMake
+      run: |
+        mkdir -p build
+        cd build
+        cmake ..
+    
+    - name: Build
+      run: |
+        cd build
+        make
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-${{ matrix.platform }}
+        path: build/
+  
+  # Стадия тестирования
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ubuntu, centos]
+        include:
+          - platform: ubuntu
+            container: 'astra:latest'
+          - platform: centos
+            container: 'redos:latest'
+    
+    container:
+      image: ${{ matrix.container }}
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+    
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-${{ matrix.platform }}
+        path: build/
+    
+    - name: Set execute permissions
+      run: chmod +x build/run_tests
+    
+    - name: Run tests
+      run: |
+        cd build
+        ./run_tests --gtest_output=xml:test_results.xml
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-${{ matrix.platform }}
+        path: build/test_results.xml
+  
+  # Стадия развертывания
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+    
+    - name: Upload to release
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          build-ubuntu/
+          build-centos/
+  
+  # Стадия создания пакетов
+  package:
+    needs: deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [astra, redos-rpm]
+        include:
+          - platform: astra
+            container: 'astra:latest'
+            package_type: 'deb'
+          - platform: redos-rpm
+            container: 'redos-rpm:latest'
+            package_type: 'rpm'
+    
+    container:
+      image: ${{ matrix.container }}
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+    
+    - name: Install packaging dependencies
+      run: |
+        if [ "${{ matrix.platform }}" = "astra" ]; then
+          apt-get update && apt-get install -y cmake g++ make dpkg-dev
+        else
+          yum install -y cmake gcc-c++ make rpm-build
+        fi
+    
+    - name: Configure CMake
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+    
+    - name: Build
+      run: |
+        cd build
+        make
+    
+    - name: Create package
+      run: |
+        cd build
+        if [ "${{ matrix.package_type }}" = "deb" ]; then
+          cpack -G DEB
+        else
+          cpack -G RPM
+        fi
+    
+    - name: Upload package
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.package_type }}-package
+        path: build/*.${matrix.package_type}
+  
+  # Стадия тестирования пакетов
+  package-test:
+    needs: package
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [astra, redos-rpm]
+        include:
+          - platform: astra
+            container: 'astra:latest'
+            package_type: 'deb'
+          - platform: redos-rpm
+            container: 'redos-rpm:latest'
+            package_type: 'rpm'
+    
+    container:
+      image: ${{ matrix.container }}
+    
+    steps:
+    - name: Download package
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ matrix.package_type }}-package
+        path: packages/
+    
+    - name: Install package
+      run: |
+        if [ "${{ matrix.package_type }}" = "deb" ]; then
+          dpkg -i packages/*.deb
+        else
+          rpm -i packages/*.rpm
+        fi
+    
+    - name: Verify installation
+      run: |
+        if [ -f /usr/bin/calculator ]; then
+          echo "Calculator executable found at expected location."
+          exit 0
+        else
+          echo "Calculator executable not found at expected location."
+          exit 1
+        fi 
