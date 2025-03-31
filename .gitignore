@@ -1,2 +1,5 @@
-.exe
+*.exe
 calc.exe
+/build
+*.cmake
+*.o
