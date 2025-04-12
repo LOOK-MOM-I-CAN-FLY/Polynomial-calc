@@ -3,20 +3,17 @@
 #include "../modint.h"
 #include "../polynomial.h"
 
-// Тесты для класса FactorRingElement
 
-// Объявление типов для удобства
 typedef ModInt<5> Field;  // Поле Z_5
 typedef FactorRingElement<Field> FactorRing;
 
-// Подготовка неприводимого многочлена для тестов
+
 Polynomial<Field> get_irreducible_polynomial() {
     // x^2 + 2 - неприводим над Z_5
     std::vector<Field> coeffs = {Field(2), Field(0), Field(1)};
     return Polynomial<Field>(coeffs);
 }
 
-// Тест конструктора
 TEST(FactorRingTest, Constructor) {
     auto mod_poly = get_irreducible_polynomial();
     
@@ -39,7 +36,7 @@ TEST(FactorRingTest, Constructor) {
     EXPECT_EQ(high_element.poly[0].value, 4); // (1 - 2) % 5 = -1 % 5 = 4
 }
 
-// Тест сложения
+
 TEST(FactorRingTest, Addition) {
     auto mod_poly = get_irreducible_polynomial();
     
@@ -60,7 +57,7 @@ TEST(FactorRingTest, Addition) {
     EXPECT_TRUE(result.poly.coeffs.empty());
 }
 
-// Тест вычитания
+
 TEST(FactorRingTest, Subtraction) {
     auto mod_poly = get_irreducible_polynomial();
     
@@ -82,7 +79,7 @@ TEST(FactorRingTest, Subtraction) {
     EXPECT_EQ(result.poly[1].value, 3);
 }
 
-// Тест умножения
+
 TEST(FactorRingTest, Multiplication) {
     auto mod_poly = get_irreducible_polynomial();
     
@@ -106,7 +103,7 @@ TEST(FactorRingTest, Multiplication) {
     EXPECT_EQ(result.poly[1].value, 1);
 }
 
-// Тест для алгоритма Евклида (static метод)
+
 TEST(FactorRingTest, ExtendedGCD) {
     // Тестируем для простых многочленов в Z_5
     // p(x) = x + 1, q(x) = x + 2
@@ -129,7 +126,7 @@ TEST(FactorRingTest, ExtendedGCD) {
     EXPECT_EQ(check[0].value, g[0].value);
 }
 
-// Тест для расчета обратного элемента
+
 TEST(FactorRingTest, Inverse) {
     auto mod_poly = get_irreducible_polynomial();
     
@@ -146,7 +143,7 @@ TEST(FactorRingTest, Inverse) {
     EXPECT_EQ(product.poly[0].value, 1);
 }
 
-// Тест для деления
+
 TEST(FactorRingTest, Division) {
     auto mod_poly = get_irreducible_polynomial();
     
@@ -172,7 +169,7 @@ TEST(FactorRingTest, Division) {
     }
 }
 
-// Тест для возведения в степень
+
 TEST(FactorRingTest, Power) {
     auto mod_poly = get_irreducible_polynomial();
     
