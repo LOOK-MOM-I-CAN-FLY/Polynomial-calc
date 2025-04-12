@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 #include "../polynomial.h"
 
-// Тесты операции сложения многочленов
 
-// Сложение двух обычных многочленов
 TEST(PolynomialAdditionTest, RegularPolynomials) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {4, 5, 6}; // 4 + 5x + 6x^2
@@ -16,7 +14,7 @@ TEST(PolynomialAdditionTest, RegularPolynomials) {
     EXPECT_EQ(result[2], 9);  // 3 + 6
 }
 
-// Сложение многочленов разной степени
+
 TEST(PolynomialAdditionTest, DifferentDegrees) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {4, 5};    // 4 + 5x
@@ -29,7 +27,7 @@ TEST(PolynomialAdditionTest, DifferentDegrees) {
     EXPECT_EQ(result[2], 3);  // 3 (нет члена в p2)
 }
 
-// Сложение с нулевым многочленом
+
 TEST(PolynomialAdditionTest, AddZeroPolynomial) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {}; // Нулевой многочлен
@@ -42,18 +40,18 @@ TEST(PolynomialAdditionTest, AddZeroPolynomial) {
     EXPECT_EQ(result[2], 3);
 }
 
-// Сложение многочленов с отрицательными коэффициентами
+
 TEST(PolynomialAdditionTest, NegativeCoefficients) {
     std::vector<int> coeffs1 = {-1, -2, -3}; // -1 - 2x - 3x^2
     std::vector<int> coeffs2 = {1, 2, 3};    // 1 + 2x + 3x^2
     Polynomial<int> p1(coeffs1);
     Polynomial<int> p2(coeffs2);
     Polynomial<int> result = p1 + p2;
-    EXPECT_EQ(result.degree(), -1); // должно получиться 0 (нулевой многочлен)
+    EXPECT_EQ(result.degree(), -1); 
     EXPECT_TRUE(result.coeffs.empty());
 }
 
-// Проверка оператора +=
+
 TEST(PolynomialAdditionTest, PlusEqualsOperator) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {4, 5, 6}; // 4 + 5x + 6x^2
