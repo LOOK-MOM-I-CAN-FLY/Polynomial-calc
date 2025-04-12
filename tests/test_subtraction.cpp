@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 #include "../polynomial.h"
 
-// Тесты операции вычитания многочленов
 
-// Вычитание двух обычных многочленов
 TEST(PolynomialSubtractionTest, RegularPolynomials) {
     std::vector<int> coeffs1 = {5, 7, 9}; // 5 + 7x + 9x^2
     std::vector<int> coeffs2 = {1, 2, 3}; // 1 + 2x + 3x^2
@@ -16,7 +14,7 @@ TEST(PolynomialSubtractionTest, RegularPolynomials) {
     EXPECT_EQ(result[2], 6);  // 9 - 3
 }
 
-// Вычитание многочленов разной степени
+
 TEST(PolynomialSubtractionTest, DifferentDegrees) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {4, 5};    // 4 + 5x
@@ -29,7 +27,6 @@ TEST(PolynomialSubtractionTest, DifferentDegrees) {
     EXPECT_EQ(result[2], 3);   // 3 (нет члена в p2)
 }
 
-// Вычитание с нулевым многочленом
 TEST(PolynomialSubtractionTest, SubtractZeroPolynomial) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {}; // Нулевой многочлен
@@ -42,7 +39,7 @@ TEST(PolynomialSubtractionTest, SubtractZeroPolynomial) {
     EXPECT_EQ(result[2], 3);
 }
 
-// Вычитание из нулевого многочлена
+
 TEST(PolynomialSubtractionTest, ZeroSubtractPolynomial) {
     std::vector<int> coeffs1 = {}; // Нулевой многочлен
     std::vector<int> coeffs2 = {1, 2, 3}; // 1 + 2x + 3x^2
@@ -55,7 +52,7 @@ TEST(PolynomialSubtractionTest, ZeroSubtractPolynomial) {
     EXPECT_EQ(result[2], -3);
 }
 
-// Вычитание одинаковых многочленов
+
 TEST(PolynomialSubtractionTest, SubtractEqualPolynomials) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     Polynomial<int> p1(coeffs1);
@@ -65,7 +62,7 @@ TEST(PolynomialSubtractionTest, SubtractEqualPolynomials) {
     EXPECT_TRUE(result.coeffs.empty());
 }
 
-// Проверка оператора -=
+
 TEST(PolynomialSubtractionTest, MinusEqualsOperator) {
     std::vector<int> coeffs1 = {5, 7, 9}; // 5 + 7x + 9x^2
     std::vector<int> coeffs2 = {1, 2, 3}; // 1 + 2x + 3x^2
