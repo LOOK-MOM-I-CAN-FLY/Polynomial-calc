@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 #include "../modint.h"
 
-// Тесты для класса ModInt
 
-// Тест конструктора
 TEST(ModIntTest, Constructor) {
     ModInt<7> a(3);
     EXPECT_EQ(a.value, 3);
@@ -15,7 +13,7 @@ TEST(ModIntTest, Constructor) {
     EXPECT_EQ(c.value, 3);
 }
 
-// Тест сложения
+
 TEST(ModIntTest, Addition) {
     ModInt<7> a(3);
     ModInt<7> b(5);
@@ -26,7 +24,7 @@ TEST(ModIntTest, Addition) {
     EXPECT_EQ(a.value, 1);
 }
 
-// Тест вычитания
+
 TEST(ModIntTest, Subtraction) {
     ModInt<7> a(3);
     ModInt<7> b(5);
@@ -37,7 +35,7 @@ TEST(ModIntTest, Subtraction) {
     EXPECT_EQ(a.value, 5);
 }
 
-// Тест умножения
+
 TEST(ModIntTest, Multiplication) {
     ModInt<7> a(3);
     ModInt<7> b(5);
@@ -48,7 +46,7 @@ TEST(ModIntTest, Multiplication) {
     EXPECT_EQ(a.value, 1);
 }
 
-// Тест быстрого возведения в степень
+
 TEST(ModIntTest, Power) {
     ModInt<7> a(3);
     ModInt<7> result = a.pow(4); // 3^4 % 7 = 81 % 7 = 4
@@ -62,7 +60,7 @@ TEST(ModIntTest, Power) {
     EXPECT_EQ(result.value, 3);
 }
 
-// Тест нахождения обратного элемента
+
 TEST(ModIntTest, Inverse) {
     ModInt<7> a(3);
     ModInt<7> inv = a.inv(); // 3 * inv ≡ 1 (mod 7) => inv = 5
@@ -73,7 +71,7 @@ TEST(ModIntTest, Inverse) {
     EXPECT_EQ(product.value, 1);
 }
 
-// Тест деления
+
 TEST(ModIntTest, Division) {
     ModInt<7> a(3);
     ModInt<7> b(2);
@@ -84,7 +82,7 @@ TEST(ModIntTest, Division) {
     EXPECT_EQ(a.value, 5);
 }
 
-// Тест равенства
+
 TEST(ModIntTest, Equality) {
     ModInt<7> a(3);
     ModInt<7> b(3);
