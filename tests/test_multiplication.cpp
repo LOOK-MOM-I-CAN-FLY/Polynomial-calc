@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 #include "../polynomial.h"
 
-// Тесты операции умножения многочленов
 
-// Умножение двух обычных многочленов
 TEST(PolynomialMultiplicationTest, RegularPolynomials) {
     std::vector<int> coeffs1 = {1, 2}; // 1 + 2x
     std::vector<int> coeffs2 = {3, 4}; // 3 + 4x
@@ -16,7 +14,7 @@ TEST(PolynomialMultiplicationTest, RegularPolynomials) {
     EXPECT_EQ(result[2], 8);   // 2*4
 }
 
-// Умножение многочленов разной степени
+
 TEST(PolynomialMultiplicationTest, DifferentDegrees) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {4, 5};    // 4 + 5x
@@ -30,7 +28,6 @@ TEST(PolynomialMultiplicationTest, DifferentDegrees) {
     EXPECT_EQ(result[3], 15);  // 3*5
 }
 
-// Умножение на нулевой многочлен
 TEST(PolynomialMultiplicationTest, MultiplyByZero) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {}; // Нулевой многочлен
@@ -41,7 +38,6 @@ TEST(PolynomialMultiplicationTest, MultiplyByZero) {
     EXPECT_TRUE(result.coeffs.empty());
 }
 
-// Умножение на единичный многочлен
 TEST(PolynomialMultiplicationTest, MultiplyByOne) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {1}; // 1 (единичный многочлен)
@@ -54,7 +50,7 @@ TEST(PolynomialMultiplicationTest, MultiplyByOne) {
     EXPECT_EQ(result[2], 3);
 }
 
-// Умножение на x (сдвиг)
+
 TEST(PolynomialMultiplicationTest, MultiplyByX) {
     std::vector<int> coeffs1 = {1, 2, 3}; // 1 + 2x + 3x^2
     std::vector<int> coeffs2 = {0, 1}; // x
@@ -68,7 +64,7 @@ TEST(PolynomialMultiplicationTest, MultiplyByX) {
     EXPECT_EQ(result[3], 3);
 }
 
-// Проверка оператора *=
+
 TEST(PolynomialMultiplicationTest, TimesEqualsOperator) {
     std::vector<int> coeffs1 = {1, 2}; // 1 + 2x
     std::vector<int> coeffs2 = {3, 4}; // 3 + 4x
