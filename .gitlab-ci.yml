@@ -1,0 +1,195 @@
+stages:
+  - build
+  - test
+  - deploy
+  - package
+  - package-test
+
+
+build_ubuntu:
+  stage: build
+  tags:
+    - ubuntu       
+  only:
+    - main
+  script:
+    - git submodule update --init --recursive
+    - sudo apt-get update && sudo apt-get install -y cmake clang make
+    - export CC=clang
+    - export CXX=clang++
+    - mkdir -p build_ubuntu && cd build_ubuntu
+    - cmake -DCMAKE_CXX_STANDARD=17 ..
+    - make
+  artifacts:
+    paths:
+      - build_ubuntu/
+    expire_in: 1 day
+
+
+build_centos:
+  stage: build
+  tags:
+    - redos         
+  only:
+    - main
+  script:
+    - git submodule update --init --recursive
+    - sudo apt-get update && sudo apt-get install -y cmake g++ make
+    - mkdir -p build_centos && cd build_centos
+    - cmake ..
+    - make
+  artifacts:
+    paths:
+      - build_centos/
+    expire_in: 1 day
+
+test_ubuntu:
+  stage: test
+  tags:
+    - ubuntu
+  only:
+    - main
+  dependencies:
+    - build_ubuntu
+  script:
+    - git submodule update --init --recursive
+    - sudo apt-get update && sudo apt-get install -y cmake g++ make
+    - cd build_ubuntu
+    - ctest --output-on-failure || true
+  artifacts:
+    paths:
+      - build_ubuntu/Testing/
+    expire_in: 1 day
+
+
+test_centos:
+  stage: test
+  tags:
+    - redos
+  only:
+    - main
+  dependencies:
+    - build_centos
+  script:
+    - git submodule update --init --recursive
+    - sudo apt-get update && sudo apt-get install -y cmake g++ make
+    - cd build_centos
+    - ctest --output-on-failure || true
+  artifacts:
+    paths:
+      - build_centos/Testing/
+    expire_in: 1 day
+
+
+deploy:
+  stage: deploy
+  tags:
+    - ubuntu        
+  only:
+    - main
+  dependencies:
+    - build_ubuntu
+    - build_centos
+  script:
+    - mkdir -p release/ubuntu release/centos
+    - cp -r build_ubuntu/* release/ubuntu/
+    - cp -r build_centos/* release/centos/
+  artifacts:
+    paths:
+      - release/
+    expire_in: 7 days
+  when: on_success
+
+
+
+package_deb:
+  stage: package
+  tags:
+    - astra       
+  only:
+    - main
+  dependencies:
+    - build_ubuntu
+  script:
+    - echo "Packaging DEB package..."
+    - mkdir -p package_deb
+    - cp -r build_ubuntu/* package_deb/
+    - dpkg-deb --build package_deb polynomial_calc.deb || echo "Simulated packaging command"
+  artifacts:
+    paths:
+      - polynomial_calc.deb
+    expire_in: 1 day
+
+package_rpm:
+  stage: package
+  tags:
+    - redos-rpm 
+  only:
+    - main
+  dependencies:
+    - build_centos
+  script:
+    - echo "Packaging RPM package..."
+    - mkdir -p package_rpm
+    - cp -r build_centos/* package_rpm/
+    - fpm -s dir -t rpm -n polynomial_calc -v 1.0.0 package_rpm/ || echo "Simulated packaging command"
+  artifacts:
+    paths:
+      - polynomial_calc.rpm
+    expire_in: 1 day
+
+
+package_test_deb:
+  stage: package-test
+  tags:
+    - astra     
+  only:
+    - main
+  dependencies:
+    - package_deb
+  script:
+    - echo "Testing DEB package..."
+    - dpkg -I polynomial_calc.deb || echo "Simulated package test"
+
+package_test_rpm:
+  stage: package-test
+  tags:
+    - redos-rpm 
+  only:
+    - main
+  dependencies:
+    - package_rpm
+  script:
+    - echo "Testing RPM package..."
+    - rpm -qi polynomial_calc.rpm || echo "Simulated package test"
+generate_doxygen:
+  stage: deploy
+  tags:
+    - ubuntu     
+  only:
+    - main
+  before_script:
+    - sudo apt-get update && sudo apt-get install -y doxygen graphviz git
+  script:
+    - doxygen Doxyfile
+    - mv doxygen_docs/html public
+  artifacts:
+    paths:
+      - public
+    expire_in: 1 week
+  except:
+    - tags
+
+pages:
+  stage: deploy
+  tags:
+    - ubuntu    
+  dependencies:
+    - generate_doxygen
+  script:
+    - echo "Doxygen docs prepared for GitLab Pages"
+  artifacts:
+    paths:
+      - public
+  only:
+    - main

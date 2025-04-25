@@ -1,0 +1,773 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.13.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Polynomial Calculator: Шаблон структуры ModInt&lt; MOD &gt;</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(function() { init_search(); });
+/* @license-end */
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Polynomial Calculator
+   </div>
+   <div id="projectbrief">Калькулятор для работы с полиномами и операциями в фактор-кольцах</div>
+  </td>
+    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Поиск" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.13.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() { codefold.init(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function(){initNavTree('struct_mod_int.html',''); initResizable(true); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Загрузка...</div>
+<div class="SRStatus" id="Searching">Поиск...</div>
+<div class="SRStatus" id="NoMatches">Не найдено</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Открытые члены</a> &#124;
+<a href="#pub-attribs">Открытые атрибуты</a> &#124;
+<a href="#pub-static-attribs">Статические открытые данные</a> &#124;
+<a href="#friends">Друзья</a> &#124;
+<a href="struct_mod_int-members.html">Полный список членов класса</a>  </div>
+  <div class="headertitle"><div class="title">Шаблон структуры ModInt&lt; MOD &gt;</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Template struct for performing arithmetic modulo MOD.  
+ <a href="#details">Подробнее...</a></p>
+
+<p><code>#include &lt;<a class="el" href="modint_8h_source.html">modint.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Открытые члены</h2></td></tr>
+<tr class="memitem:ac9d45a1501c7ed7473d450bf468a58ad" id="r_ac9d45a1501c7ed7473d450bf468a58ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac9d45a1501c7ed7473d450bf468a58ad">ModInt</a> (int v=0)</td></tr>
+<tr class="memdesc:ac9d45a1501c7ed7473d450bf468a58ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. Initializes the value modulo MOD.  <br /></td></tr>
+<tr class="separator:ac9d45a1501c7ed7473d450bf468a58ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a604b3f6f237ae763243c883448b1dd27" id="r_a604b3f6f237ae763243c883448b1dd27"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a604b3f6f237ae763243c883448b1dd27">ModInt</a> (const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;other)</td></tr>
+<tr class="memdesc:a604b3f6f237ae763243c883448b1dd27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <br /></td></tr>
+<tr class="separator:a604b3f6f237ae763243c883448b1dd27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5249b67fb197e68610eab2636b7a333f" id="r_a5249b67fb197e68610eab2636b7a333f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5249b67fb197e68610eab2636b7a333f">operator+=</a> (const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;other)</td></tr>
+<tr class="memdesc:a5249b67fb197e68610eab2636b7a333f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Addition assignment operator.  <br /></td></tr>
+<tr class="separator:a5249b67fb197e68610eab2636b7a333f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a315af2621f2f9b566fdc7c9dc992fe" id="r_a8a315af2621f2f9b566fdc7c9dc992fe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a315af2621f2f9b566fdc7c9dc992fe">operator-=</a> (const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;other)</td></tr>
+<tr class="memdesc:a8a315af2621f2f9b566fdc7c9dc992fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subtraction assignment operator.  <br /></td></tr>
+<tr class="separator:a8a315af2621f2f9b566fdc7c9dc992fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46f37befe7561b5553bf2cabc81aaa35" id="r_a46f37befe7561b5553bf2cabc81aaa35"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a46f37befe7561b5553bf2cabc81aaa35">operator*=</a> (const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;other)</td></tr>
+<tr class="memdesc:a46f37befe7561b5553bf2cabc81aaa35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiplication assignment operator.  <br /></td></tr>
+<tr class="separator:a46f37befe7561b5553bf2cabc81aaa35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae9428d876e2cf3f2587947cf1e1d976" id="r_aae9428d876e2cf3f2587947cf1e1d976"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae9428d876e2cf3f2587947cf1e1d976">pow</a> (long long exp) const</td></tr>
+<tr class="memdesc:aae9428d876e2cf3f2587947cf1e1d976"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes modular exponentiation (this ^ exp) % MOD using binary exponentiation.  <br /></td></tr>
+<tr class="separator:aae9428d876e2cf3f2587947cf1e1d976"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe6791d500924668e08cc248d1451ebf" id="r_abe6791d500924668e08cc248d1451ebf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe6791d500924668e08cc248d1451ebf">inv</a> () const</td></tr>
+<tr class="memdesc:abe6791d500924668e08cc248d1451ebf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the modular multiplicative inverse using Fermat's Little Theorem. Assumes MOD is a prime number.  <br /></td></tr>
+<tr class="separator:abe6791d500924668e08cc248d1451ebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeacdaa03fe37c3248d4f279a1658ebcf" id="r_aeacdaa03fe37c3248d4f279a1658ebcf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeacdaa03fe37c3248d4f279a1658ebcf">operator/=</a> (const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;other)</td></tr>
+<tr class="memdesc:aeacdaa03fe37c3248d4f279a1658ebcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Division assignment operator (multiplication by modular inverse).  <br /></td></tr>
+<tr class="separator:aeacdaa03fe37c3248d4f279a1658ebcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Открытые атрибуты</h2></td></tr>
+<tr class="memitem:aaea60ed250e9fcc8716b5cb2412da345" id="r_aaea60ed250e9fcc8716b5cb2412da345"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaea60ed250e9fcc8716b5cb2412da345">value</a></td></tr>
+<tr class="memdesc:aaea60ed250e9fcc8716b5cb2412da345"><td class="mdescLeft">&#160;</td><td class="mdescRight">The integer value reduced modulo MOD.  <br /></td></tr>
+<tr class="separator:aaea60ed250e9fcc8716b5cb2412da345"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+Статические открытые данные</h2></td></tr>
+<tr class="memitem:a27621c1fd4d76d90362a82794cc972e9" id="r_a27621c1fd4d76d90362a82794cc972e9"><td class="memItemLeft" align="right" valign="top">static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a27621c1fd4d76d90362a82794cc972e9">MOD_VALUE</a> = MOD</td></tr>
+<tr class="memdesc:a27621c1fd4d76d90362a82794cc972e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">The modulus value.  <br /></td></tr>
+<tr class="separator:a27621c1fd4d76d90362a82794cc972e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Друзья</h2></td></tr>
+<tr class="memitem:a3de434c4f476b020600c05cce14d2c53" id="r_a3de434c4f476b020600c05cce14d2c53"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3de434c4f476b020600c05cce14d2c53">operator+</a> (<a class="el" href="struct_mod_int.html">ModInt</a> a, const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;b)</td></tr>
+<tr class="memdesc:a3de434c4f476b020600c05cce14d2c53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Addition operator.  <br /></td></tr>
+<tr class="separator:a3de434c4f476b020600c05cce14d2c53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcd7087570a1d76eb6f9f4c622791560" id="r_adcd7087570a1d76eb6f9f4c622791560"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adcd7087570a1d76eb6f9f4c622791560">operator-</a> (<a class="el" href="struct_mod_int.html">ModInt</a> a, const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;b)</td></tr>
+<tr class="memdesc:adcd7087570a1d76eb6f9f4c622791560"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subtraction operator.  <br /></td></tr>
+<tr class="separator:adcd7087570a1d76eb6f9f4c622791560"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31c82f6bdf8f46215adfcecbcefdcaca" id="r_a31c82f6bdf8f46215adfcecbcefdcaca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a31c82f6bdf8f46215adfcecbcefdcaca">operator*</a> (<a class="el" href="struct_mod_int.html">ModInt</a> a, const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;b)</td></tr>
+<tr class="memdesc:a31c82f6bdf8f46215adfcecbcefdcaca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiplication operator.  <br /></td></tr>
+<tr class="separator:a31c82f6bdf8f46215adfcecbcefdcaca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af437e822ea92405793a93c3a44bf2e9f" id="r_af437e822ea92405793a93c3a44bf2e9f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_mod_int.html">ModInt</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af437e822ea92405793a93c3a44bf2e9f">operator/</a> (<a class="el" href="struct_mod_int.html">ModInt</a> a, const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;b)</td></tr>
+<tr class="memdesc:af437e822ea92405793a93c3a44bf2e9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Division operator.  <br /></td></tr>
+<tr class="separator:af437e822ea92405793a93c3a44bf2e9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a0b039b5df988cbe86f54a3ec01e808" id="r_a0a0b039b5df988cbe86f54a3ec01e808"><td class="memItemLeft" align="right" valign="top">ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0a0b039b5df988cbe86f54a3ec01e808">operator&lt;&lt;</a> (ostream &amp;os, const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;m)</td></tr>
+<tr class="memdesc:a0a0b039b5df988cbe86f54a3ec01e808"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overloads the output stream operator for printing the <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> value.  <br /></td></tr>
+<tr class="separator:a0a0b039b5df988cbe86f54a3ec01e808"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05c56f1667abe4dc8775552e72d42b9f" id="r_a05c56f1667abe4dc8775552e72d42b9f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a05c56f1667abe4dc8775552e72d42b9f">operator==</a> (const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;a, const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;b)</td></tr>
+<tr class="memdesc:a05c56f1667abe4dc8775552e72d42b9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison operator.  <br /></td></tr>
+<tr class="separator:a05c56f1667abe4dc8775552e72d42b9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa01156aca11ec743b11efac6d7503a13" id="r_aa01156aca11ec743b11efac6d7503a13"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa01156aca11ec743b11efac6d7503a13">operator!=</a> (const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;a, const <a class="el" href="struct_mod_int.html">ModInt</a> &amp;b)</td></tr>
+<tr class="memdesc:aa01156aca11ec743b11efac6d7503a13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inequality comparison operator.  <br /></td></tr>
+<tr class="separator:aa01156aca11ec743b11efac6d7503a13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;int MOD&gt;<br />
+struct ModInt&lt; MOD &gt;</div><p>Template struct for performing arithmetic modulo MOD. </p>
+<dl class="tparams"><dt>Параметры шаблона</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">MOD</td><td>The modulus value. Represents integers modulo MOD, often used for operations in finite fields like ℤₚ. </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Конструктор(ы)</h2>
+<a id="ac9d45a1501c7ed7473d450bf468a58ad" name="ac9d45a1501c7ed7473d450bf468a58ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9d45a1501c7ed7473d450bf468a58ad">&#9670;&#160;</a></span>ModInt() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;<a class="el" href="struct_mod_int.html">::ModInt</a> </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>v</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructor. Initializes the value modulo MOD. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>Initial integer value. Defaults to 0. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a604b3f6f237ae763243c883448b1dd27" name="a604b3f6f237ae763243c883448b1dd27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a604b3f6f237ae763243c883448b1dd27">&#9670;&#160;</a></span>ModInt() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;<a class="el" href="struct_mod_int.html">::ModInt</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Copy constructor. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>Another <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> object to copy from. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Методы</h2>
+<a id="abe6791d500924668e08cc248d1451ebf" name="abe6791d500924668e08cc248d1451ebf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe6791d500924668e08cc248d1451ebf">&#9670;&#160;</a></span>inv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;::inv </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes the modular multiplicative inverse using Fermat's Little Theorem. Assumes MOD is a prime number. </p>
+<dl class="section return"><dt>Возвращает</dt><dd>The modular inverse of this <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a>. </dd></dl>
+
+</div>
+</div>
+<a id="a46f37befe7561b5553bf2cabc81aaa35" name="a46f37befe7561b5553bf2cabc81aaa35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46f37befe7561b5553bf2cabc81aaa35">&#9670;&#160;</a></span>operator*=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> &amp; <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;::operator*= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Multiplication assignment operator. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> to multiply by. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>Reference to this <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> after multiplication. </dd></dl>
+
+</div>
+</div>
+<a id="a5249b67fb197e68610eab2636b7a333f" name="a5249b67fb197e68610eab2636b7a333f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5249b67fb197e68610eab2636b7a333f">&#9670;&#160;</a></span>operator+=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> &amp; <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;::operator+= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Addition assignment operator. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> to add. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>Reference to this <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> after addition. </dd></dl>
+
+</div>
+</div>
+<a id="a8a315af2621f2f9b566fdc7c9dc992fe" name="a8a315af2621f2f9b566fdc7c9dc992fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a315af2621f2f9b566fdc7c9dc992fe">&#9670;&#160;</a></span>operator-=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> &amp; <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;::operator-= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Subtraction assignment operator. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> to subtract. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>Reference to this <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> after subtraction. </dd></dl>
+
+</div>
+</div>
+<a id="aeacdaa03fe37c3248d4f279a1658ebcf" name="aeacdaa03fe37c3248d4f279a1658ebcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeacdaa03fe37c3248d4f279a1658ebcf">&#9670;&#160;</a></span>operator/=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> &amp; <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;::operator/= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Division assignment operator (multiplication by modular inverse). </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> to divide by. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>Reference to this <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> after division. Assumes MOD is prime. </dd></dl>
+
+</div>
+</div>
+<a id="aae9428d876e2cf3f2587947cf1e1d976" name="aae9428d876e2cf3f2587947cf1e1d976"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae9428d876e2cf3f2587947cf1e1d976">&#9670;&#160;</a></span>pow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;::pow </td>
+          <td>(</td>
+          <td class="paramtype">long long</td>          <td class="paramname"><span class="paramname"><em>exp</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes modular exponentiation (this ^ exp) % MOD using binary exponentiation. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">exp</td><td>The exponent (non-negative). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>The result of (this ^ exp) % MOD. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Друзья класса и относящимся к классу обозначения</h2>
+<a id="aa01156aca11ec743b11efac6d7503a13" name="aa01156aca11ec743b11efac6d7503a13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa01156aca11ec743b11efac6d7503a13">&#9670;&#160;</a></span>operator!=</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool operator!= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>a</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>b</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Inequality comparison operator. </p>
+
+</div>
+</div>
+<a id="a31c82f6bdf8f46215adfcecbcefdcaca" name="a31c82f6bdf8f46215adfcecbcefdcaca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31c82f6bdf8f46215adfcecbcefdcaca">&#9670;&#160;</a></span>operator*</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> operator* </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;</td>          <td class="paramname"><span class="paramname"><em>a</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>b</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Multiplication operator. </p>
+
+</div>
+</div>
+<a id="a3de434c4f476b020600c05cce14d2c53" name="a3de434c4f476b020600c05cce14d2c53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3de434c4f476b020600c05cce14d2c53">&#9670;&#160;</a></span>operator+</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> operator+ </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;</td>          <td class="paramname"><span class="paramname"><em>a</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>b</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Addition operator. </p>
+
+</div>
+</div>
+<a id="adcd7087570a1d76eb6f9f4c622791560" name="adcd7087570a1d76eb6f9f4c622791560"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adcd7087570a1d76eb6f9f4c622791560">&#9670;&#160;</a></span>operator-</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> operator- </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;</td>          <td class="paramname"><span class="paramname"><em>a</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>b</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Subtraction operator. </p>
+
+</div>
+</div>
+<a id="af437e822ea92405793a93c3a44bf2e9f" name="af437e822ea92405793a93c3a44bf2e9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af437e822ea92405793a93c3a44bf2e9f">&#9670;&#160;</a></span>operator/</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_mod_int.html">ModInt</a> operator/ </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;</td>          <td class="paramname"><span class="paramname"><em>a</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>b</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Division operator. </p>
+
+</div>
+</div>
+<a id="a0a0b039b5df988cbe86f54a3ec01e808" name="a0a0b039b5df988cbe86f54a3ec01e808"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a0b039b5df988cbe86f54a3ec01e808">&#9670;&#160;</a></span>operator&lt;&lt;</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ostream &amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">ostream &amp;</td>          <td class="paramname"><span class="paramname"><em>os</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>m</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Overloads the output stream operator for printing the <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> value. </p>
+<dl class="params"><dt>Аргументы</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">os</td><td>The output stream. </td></tr>
+    <tr><td class="paramname">m</td><td>The <a class="el" href="struct_mod_int.html" title="Template struct for performing arithmetic modulo MOD.">ModInt</a> to print. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Возвращает</dt><dd>The output stream. </dd></dl>
+
+</div>
+</div>
+<a id="a05c56f1667abe4dc8775552e72d42b9f" name="a05c56f1667abe4dc8775552e72d42b9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05c56f1667abe4dc8775552e72d42b9f">&#9670;&#160;</a></span>operator==</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>a</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>b</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Equality comparison operator. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Данные класса</h2>
+<a id="a27621c1fd4d76d90362a82794cc972e9" name="a27621c1fd4d76d90362a82794cc972e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27621c1fd4d76d90362a82794cc972e9">&#9670;&#160;</a></span>MOD_VALUE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;::MOD_VALUE = MOD</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel constexpr">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The modulus value. </p>
+
+</div>
+</div>
+<a id="aaea60ed250e9fcc8716b5cb2412da345" name="aaea60ed250e9fcc8716b5cb2412da345"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaea60ed250e9fcc8716b5cb2412da345">&#9670;&#160;</a></span>value</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int MOD&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="struct_mod_int.html">ModInt</a>&lt; MOD &gt;::value</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The integer value reduced modulo MOD. </p>
+
+</div>
+</div>
+<hr/>Объявления и описания членов структуры находятся в файле:<ul>
+<li><a class="el" href="modint_8h_source.html">modint.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="struct_mod_int.html">ModInt</a></li>
+    <li class="footer">Создано системой <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.13.2 </li>
+  </ul>
+</div>
+</body>
+</html>
