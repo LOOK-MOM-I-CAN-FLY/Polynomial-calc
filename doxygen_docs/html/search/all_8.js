@@ -1,9 +1,0 @@
-var searchData=
-[
-  ['if_20you_20have_20run_20out_20of_20energy_20or_20time_20for_20your_20project_20put_20a_20note_20at_20the_20top_20of_20the_20readme_20saying_20that_20development_20has_20slowed_20down_20or_20stopped_20completely_20someone_20may_20choose_20to_20fork_20your_20project_20or_20volunteer_20to_20step_20in_20as_20a_20maintainer_20or_20owner_20allowing_20your_20project_20to_20keep_20going_20you_20can_20also_20make_20an_20explicit_20request_20for_20maintainers_0',['If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.',['../md__r_e_a_d_m_e.html#autotoc_md20',1,'']]],
-  ['in_20as_20a_20maintainer_20or_20owner_20allowing_20your_20project_20to_20keep_20going_20you_20can_20also_20make_20an_20explicit_20request_20for_20maintainers_1',['If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.',['../md__r_e_a_d_m_e.html#autotoc_md20',1,'']]],
-  ['installation_2',['Installation',['../md__r_e_a_d_m_e.html#autotoc_md12',1,'']]],
-  ['integrate_20with_20your_20tools_3',['Integrate with your tools',['../md__r_e_a_d_m_e.html#autotoc_md3',1,'']]],
-  ['inv_4',['inv',['../class_factor_ring_element.html#a74fd961cc34855c63d6d4ae62d9d20b4',1,'FactorRingElement::inv()'],['../struct_mod_int.html#abe6791d500924668e08cc248d1451ebf',1,'ModInt::inv()']]],
-  ['is_5firreducible_5',['is_irreducible',['../factor__ring_8h.html#ac6dc981792d97e068513387e187264c4',1,'factor_ring.h']]]
-];
