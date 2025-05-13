@@ -5,191 +5,232 @@ stages:
   - package
   - package-test
 
+###############################################################################
+# BUILD
+###############################################################################
 
-build_ubuntu:
+.build_template: &build_defaults
   stage: build
-  tags:
-    - ubuntu       
-  only:
-    - main
+  only: [main]
   script:
     - git submodule update --init --recursive
-    - sudo apt-get update && sudo apt-get install -y cmake clang make
+
+build_ubuntu:
+  <<: *build_defaults
+  tags: [ubuntu]
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y cmake clang make
+  script:
     - export CC=clang
     - export CXX=clang++
     - mkdir -p build_ubuntu && cd build_ubuntu
     - cmake -DCMAKE_CXX_STANDARD=17 ..
-    - make
+    - make -j"$(nproc)"
   artifacts:
-    paths:
-      - build_ubuntu/
-    expire_in: 1 day
-
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-build_ubuntu"
+    paths: [build_ubuntu/]
+    expire_in: 1 week
 
 build_centos:
-  stage: build
-  tags:
-    - redos         
-  only:
-    - main
+  <<: *build_defaults
+  tags: [redos]
+  before_script:
+    - yum -y install cmake gcc-c++ make
   script:
-    - git submodule update --init --recursive
-    - sudo apt-get update && sudo apt-get install -y cmake g++ make
     - mkdir -p build_centos && cd build_centos
-    - cmake ..
-    - make
+    - cmake -DCMAKE_CXX_STANDARD=17 ..
+    - make -j"$(nproc)"
   artifacts:
-    paths:
-      - build_centos/
-    expire_in: 1 day
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-build_centos"
+    paths: [build_centos/]
+    expire_in: 1 week
+
+###############################################################################
+# TEST
+###############################################################################
+
+.test_template: &test_defaults
+  stage: test
+  only: [main]
+  artifacts:
+    when: always
+    expire_in: 1 week
 
 test_ubuntu:
-  stage: test
-  tags:
-    - ubuntu
-  only:
-    - main
-  dependencies:
-    - build_ubuntu
+  <<: *test_defaults
+  tags: [ubuntu]
+  needs:
+    - job: build_ubuntu
+      artifacts: true
   script:
-    - git submodule update --init --recursive
-    - sudo apt-get update && sudo apt-get install -y cmake g++ make
     - cd build_ubuntu
-    - ctest --output-on-failure || true
+    - ctest --output-on-failure --output-junit test_results.xml || true
   artifacts:
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-test_ubuntu"
     paths:
       - build_ubuntu/Testing/
-    expire_in: 1 day
-
+      - build_ubuntu/test_results.xml
+    reports:
+      junit: build_ubuntu/test_results.xml
 
 test_centos:
-  stage: test
-  tags:
-    - redos
-  only:
-    - main
-  dependencies:
-    - build_centos
+  <<: *test_defaults
+  tags: [redos]
+  needs:
+    - job: build_centos
+      artifacts: true
   script:
-    - git submodule update --init --recursive
-    - sudo apt-get update && sudo apt-get install -y cmake g++ make
     - cd build_centos
-    - ctest --output-on-failure || true
+    - ctest --output-on-failure --output-junit test_results.xml || true
   artifacts:
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-test_centos"
     paths:
       - build_centos/Testing/
-    expire_in: 1 day
+      - build_centos/test_results.xml
+    reports:
+      junit: build_centos/test_results.xml
 
+###############################################################################
+# DEPLOY  (release + docs)
+###############################################################################
 
 deploy:
   stage: deploy
-  tags:
-    - ubuntu        
-  only:
-    - main
-  dependencies:
-    - build_ubuntu
-    - build_centos
+  tags: [ubuntu]
+  only: [main]
+  needs:
+    - job: test_ubuntu
+      artifacts: true
+    - job: test_centos
+      artifacts: true
   script:
     - mkdir -p release/ubuntu release/centos
     - cp -r build_ubuntu/* release/ubuntu/
     - cp -r build_centos/* release/centos/
   artifacts:
-    paths:
-      - release/
-    expire_in: 7 days
-  when: on_success
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-release"
+    paths: [release/]
+    expire_in: 1 week
 
-
-
-package_deb:
-  stage: package
-  tags:
-    - astra       
-  only:
-    - main
-  dependencies:
-    - build_ubuntu
-  script:
-    - echo "Packaging DEB package..."
-    - mkdir -p package_deb
-    - cp -r build_ubuntu/* package_deb/
-    - dpkg-deb --build package_deb polynomial_calc.deb || echo "Simulated packaging command"
-  artifacts:
-    paths:
-      - polynomial_calc.deb
-    expire_in: 1 day
-
-package_rpm:
-  stage: package
-  tags:
-    - redos-rpm 
-  only:
-    - main
-  dependencies:
-    - build_centos
-  script:
-    - echo "Packaging RPM package..."
-    - mkdir -p package_rpm
-    - cp -r build_centos/* package_rpm/
-    - fpm -s dir -t rpm -n polynomial_calc -v 1.0.0 package_rpm/ || echo "Simulated packaging command"
-  artifacts:
-    paths:
-      - polynomial_calc.rpm
-    expire_in: 1 day
-
-
-package_test_deb:
-  stage: package-test
-  tags:
-    - astra     
-  only:
-    - main
-  dependencies:
-    - package_deb
-  script:
-    - echo "Testing DEB package..."
-    - dpkg -I polynomial_calc.deb || echo "Simulated package test"
-
-package_test_rpm:
-  stage: package-test
-  tags:
-    - redos-rpm 
-  only:
-    - main
-  dependencies:
-    - package_rpm
-  script:
-    - echo "Testing RPM package..."
-    - rpm -qi polynomial_calc.rpm || echo "Simulated package test"
 generate_doxygen:
   stage: deploy
-  tags:
-    - ubuntu     
-  only:
-    - main
+  tags: [ubuntu]
+  only: [main]
+  needs:
+    - job: test_ubuntu
+      artifacts: true
+    - job: test_centos
+      artifacts: true
+  variables:
+    OUTPUT_DIR: "doxygen_docs/html"
+    EXPORT_DIR: "docs_bundle"
   before_script:
-    - sudo apt-get update && sudo apt-get install -y doxygen graphviz git
+    - apt-get update -qq
+    - apt-get install -y --no-install-recommends doxygen graphviz zip
   script:
     - doxygen Doxyfile
-    - mv doxygen_docs/html public
+    - mkdir -p "$EXPORT_DIR"
+    - cp -r "${OUTPUT_DIR}/"* "$EXPORT_DIR"/
+    - (cd "$EXPORT_DIR" && zip -r ../doxygen_html.zip .)
   artifacts:
+    name: "$CI_PROJECT_NAME-docs-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA"
     paths:
-      - public
+      - "$EXPORT_DIR"        # docs_bundle/index.html
+      - "doxygen_html.zip"
+    when: always
     expire_in: 1 week
-  except:
-    - tags
 
-pages:
-  stage: deploy
-  tags:
-    - ubuntu    
-  dependencies:
-    - generate_doxygen
+###############################################################################
+# PACKAGE
+###############################################################################
+
+.package_template: &package_defaults
+  stage: package
+  only: [main]
+
+package_deb:
+  <<: *package_defaults
+  tags: [ubuntu]
+  needs:
+    - job: deploy
+      artifacts: false
+    - job: build_ubuntu
+      artifacts: true
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y dpkg-dev fakeroot
   script:
-    - echo "Doxygen docs prepared for GitLab Pages"
+    - cd build_ubuntu
+    - cpack -G DEB
   artifacts:
-    paths:
-      - public
-  only:
-    - main
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-deb"
+    paths: [build_ubuntu/*.deb]
+    expire_in: 1 week
+
+package_rpm:
+  <<: *package_defaults
+  tags: [redos-rpm]
+  needs:
+    - job: deploy
+      artifacts: false
+    - job: build_centos
+      artifacts: true
+  before_script:
+    - yum -y install rpm-build
+  script:
+    - cd build_centos
+    - cpack -G RPM
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-rpm"
+    paths: [build_centos/*.rpm]
+    expire_in: 1 week
+
+###############################################################################
+# PACKAGE-TEST
+###############################################################################
+
+.package_test_template: &package_test_defaults
+  stage: package-test
+  only: [main]
+
+# ----------  DEB  ----------
+package_test_deb:
+  <<: *package_test_defaults
+  tags: [ubuntu]
+  needs:
+    - job: package_deb
+      artifacts: true
+  before_script:
+    - apt-get update -qq
+  script:
+    - echo "Installing DEB package…"
+    # установка пакета (может завершиться с ненулевым кодом, если не хватает зависимостей)
+    - dpkg -i build_ubuntu/*.deb || true
+    # догружаем недостающие зависимости
+    - apt-get -y -f install
+    # показать файлы пакета
+    - PKG_NAME="$(dpkg-deb --field build_ubuntu/*.deb Package)"
+    - dpkg -L "$PKG_NAME"
+    # найти первый бинарь в /usr/bin и запустить его
+    - BIN="$(dpkg -L "$PKG_NAME" | grep '^/usr/bin/' | head -n1)"
+    - echo "Running $BIN …"
+    - echo "2 3 4" | "$BIN"
+
+# ----------  RPM  ----------
+package_test_rpm:
+  <<: *package_test_defaults
+  tags: [redos-rpm]
+  needs:
+    - job: package_rpm
+      artifacts: true
+  before_script:
+    - yum -y install rpm
+  script:
+    - echo "Installing RPM package…"
+    - rpm -i --replacepkgs build_centos/*.rpm
+    - PKG_NAME="$(rpm -qp --queryformat '%{NAME}' build_centos/*.rpm)"
+    - rpm -ql "$PKG_NAME"
+    - BIN="$(rpm -ql "$PKG_NAME" | grep '^/usr/bin/' | head -n1)"
+    - echo "Running $BIN …"
+    - echo "2 3 4" | "$BIN"
