@@ -1,3 +1,11 @@
+/** @file factor_ring.h
+ *  @brief Шаблоны и утилиты для работы с фактор-кольцом F[x]/(g(x)).
+ *
+ *  Содержит:
+ *  - класс FactorRingElement — элемент фактор-кольца;
+ *  - функции проверки неприводимости и ввода многочленов;
+ *  - демонстрационную консольную программу run_factor_ring().
+ */
 #pragma once
 
 #include <iostream>
@@ -9,46 +17,72 @@
 #include "polynomial.h"
 #include "modint.h"
 
+/// @cond INTERNAL
 using namespace std;
+/// @endcond
 
 //////////////////////////////
 // Factor Ring Element
 //////////////////////////////
 
+
+/**
+ * @class FactorRingElement
+ * @tparam T тип коэффициентов (обычно ModInt<P>).
+ * @brief Класс для работы с элементами фактор-кольца F[x] по модулю многочлена g(x).
+ *
+ * Ключевые поля:
+ * - poly       — остаток многочлена;
+ * - mod_poly — неприводимый модуль, общий для всех объектов кольца.
+ *
+ * Все арифметические операции проверяют совпадение модулей и
+ * выбрасывают std::runtime_error, если модули различаются.
+ */
 template<typename T>
 class FactorRingElement {
 public:
-    Polynomial<T> poly;     // Многочлен, представляющий элемент.
-    Polynomial<T> mod_poly; // Модульный многочлен (идеал).
+    /// Остаток многочлена
+    Polynomial<T> poly;
 
+    /// Неприводимый модуль (идеал)
+    Polynomial<T> mod_poly;
+    /**
+     * @brief Создаёт элемент по заданному многочлену, сразу берёт остаток по модулю.
+     */
     FactorRingElement(const Polynomial<T>& poly, const Polynomial<T>& mod_poly)
         : mod_poly(mod_poly)
     {
         this->poly = poly % mod_poly;
     }
-    // Конструктор по умолчанию (единичный элемент).
+    /// Конструктор нулевого элемента для неинициализированных случаев
     FactorRingElement() : mod_poly(Polynomial<T>(T(1))) {}
 
+    /** @name Базовая арифметика */
+    ///@{
+    /// Сложение элементов фактор-кольца
     FactorRingElement operator+(const FactorRingElement& other) const {
         if(mod_poly.coeffs != other.mod_poly.coeffs)
             throw runtime_error("Different modules in the quotient ring when added together");
         return FactorRingElement(poly + other.poly, mod_poly);
     }
-    
+    /// Вычитание элементов фактор-кольца
     FactorRingElement operator-(const FactorRingElement& other) const {
         if(mod_poly.coeffs != other.mod_poly.coeffs)
             throw runtime_error("Different modules in the factor ring during subtraction");
         return FactorRingElement(poly - other.poly, mod_poly);
     }
-    
+    /// Умножение элементов фактор-кольца
     FactorRingElement operator*(const FactorRingElement& other) const {
         if(mod_poly.coeffs != other.mod_poly.coeffs)
             throw runtime_error("Different modules in the factor ring during multiplication");
         return FactorRingElement(poly * other.poly, mod_poly);
     }
+    ///@}
     
-    // Расширенный алгоритм Евклида для многочленов:
-    // Находит x и y такие, что a*x + b*y == gcd(a, b)
+    /**
+     * @brief Расширенный алгоритм Евклида для многочленов.
+     * @returns Кортеж (g, x, y) такой, что a*x + b*y = g = gcd(a, b).
+     */
     static tuple<Polynomial<T>, Polynomial<T>, Polynomial<T>> extended_gcd(
         const Polynomial<T>& a, const Polynomial<T>& b)
     {
@@ -59,8 +93,11 @@ public:
         auto [g, x, y] = extended_gcd(b, r);
         return {g, y, x - q * y};
     }
-    
-    // Вычисляет обратный элемент в фактор-кольце, если он существует.
+
+    /**
+     * @brief Вычисляет мультипликативно-обратный элемент, если он существует.
+     * @throw std::runtime_error если многочлены не взаимно просты.
+     */
     FactorRingElement inv() const {
         auto [g, x, y] = extended_gcd(poly, mod_poly);
         if(g.degree() != 0)
@@ -68,13 +105,14 @@ public:
         T inv_g = g.coeffs[0].inv(); // Предполагается, что тип T имеет метод inv()
         return FactorRingElement(x * Polynomial<T>(inv_g), mod_poly);
     }
-    
+    /// Деление элементов фактор-кольца
     FactorRingElement operator/(const FactorRingElement& other) const {
         if(mod_poly.coeffs != other.mod_poly.coeffs)
             throw runtime_error("Different modules in the quotient ring during division");
         return *this * other.inv();
     }
-    
+
+    /// Возведение в неотрицательную степень
     FactorRingElement pow(unsigned int exponent) const {
         FactorRingElement result(Polynomial<T>(T(1)), mod_poly);
         FactorRingElement base = *this;
@@ -86,7 +124,8 @@ public:
         }
         return result;
     }
-    
+
+    /// Оператор вывода в поток
     friend ostream& operator<<(ostream &os, const FactorRingElement& elem) {
         os << elem.poly;
         return os;
@@ -97,6 +136,16 @@ public:
 // Irreducibility Check
 //////////////////////////////
 
+/**
+ * @brief Проверка многочлена на неприводимость над заданным полем.
+ * @tparam T тип коэффициента (должен предоставлять T::MOD_VALUE).
+ * @param poly проверяемый многочлен.
+ * @retval true  если poly неприводим;
+ * @retval false иначе.
+ *
+ * Реализован полный перебор делителей степени не более deg/2
+ * с использованием теста прямого деления.
+ */
 template<typename T>
 bool is_irreducible(const Polynomial<T>& poly) {
     int deg = poly.degree();
@@ -134,7 +183,11 @@ bool is_irreducible(const Polynomial<T>& poly) {
 // Функции ввода многочленов
 //////////////////////////////
 
-// Оригинальная функция для ввода многочлена (коэффициенты вводятся начиная с константного члена)
+
+/**
+ * @brief Чтение произвольного многочлена из стандартного ввода.
+ * @return Многочлен, введённый пользователем.
+ */
 template<typename T>
 Polynomial<T> read_polynomial() {
     int n;
@@ -150,7 +203,10 @@ Polynomial<T> read_polynomial() {
     return Polynomial<T>(coeffs);
 }
 
-// Функция для ввода многочлена с ограничением по количеству коэффициентов (не более max_coeffs)
+/**
+ * @brief Чтение многочлена с ограничением на количество коэффициентов.
+ * @param max_coeffs максимальное число вводимых коэффициентов.
+ */
 template<typename T>
 Polynomial<T> read_polynomial_restricted(int max_coeffs) {
     int n;
@@ -174,6 +230,16 @@ Polynomial<T> read_polynomial_restricted(int max_coeffs) {
 // Factor Ring Operations (Field Extension F[x]/(f(x)))
 //////////////////////////////
 
+/**
+ * @brief Консольный тест-стенд для фактор-кольца F_P[x]/(f(x)).
+ *
+ * Запрашивает у пользователя:
+ * 1. Неприводимый многочлен f(x).
+ * 2. Два элемента фактор-кольца.
+ * 3. Операцию (сложение, вычитание, умножение, деление, возведение в степень и др.).
+ *
+ * Все вычисления выполняются по модулю простого числа P.
+ */
 template<int P>
 void run_factor_ring() {
     typedef ModInt<P> Field;
