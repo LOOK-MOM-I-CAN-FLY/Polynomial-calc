@@ -1,3 +1,7 @@
+# Гарантированное рекурсивное клонирование подмодулей:
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 stages:
   - build
   - test
@@ -16,14 +20,14 @@ stages:
     - git submodule update --init --recursive
 
 build_ubuntu:
+  image: ubuntu:22.04        # ← вместо astra-образа
   <<: *build_defaults
   tags: [ubuntu]
   before_script:
     - apt-get update -qq
-    - apt-get install -y cmake clang make
+    - DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential cmake
+
   script:
-    - export CC=clang
-    - export CXX=clang++
     - mkdir -p build_ubuntu && cd build_ubuntu
     - cmake -DCMAKE_CXX_STANDARD=17 ..
     - make -j"$(nproc)"
@@ -31,6 +35,9 @@ build_ubuntu:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-build_ubuntu"
     paths: [build_ubuntu/]
     expire_in: 1 week
+
+
+
 
 build_centos:
   <<: *build_defaults
@@ -46,10 +53,6 @@ build_centos:
     paths: [build_centos/]
     expire_in: 1 week
 
-###############################################################################
-# TEST
-###############################################################################
-
 .test_template: &test_defaults
   stage: test
   only: [main]
@@ -58,11 +61,15 @@ build_centos:
     expire_in: 1 week
 
 test_ubuntu:
+  image: ubuntu:22.04        # тот же образ, что и на этапе build
   <<: *test_defaults
   tags: [ubuntu]
   needs:
     - job: build_ubuntu
       artifacts: true
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y cmake            # CTest входит в пакет cmake
   script:
     - cd build_ubuntu
     - ctest --output-on-failure --output-junit test_results.xml || true
@@ -73,6 +80,8 @@ test_ubuntu:
       - build_ubuntu/test_results.xml
     reports:
       junit: build_ubuntu/test_results.xml
+
+
 
 test_centos:
   <<: *test_defaults
@@ -150,6 +159,7 @@ generate_doxygen:
   only: [main]
 
 package_deb:
+  image: ubuntu:22.04          
   <<: *package_defaults
   tags: [ubuntu]
   needs:
@@ -159,7 +169,7 @@ package_deb:
       artifacts: true
   before_script:
     - apt-get update -qq
-    - apt-get install -y dpkg-dev fakeroot
+    - apt-get install -y cmake dpkg-dev fakeroot   
   script:
     - cd build_ubuntu
     - cpack -G DEB
@@ -167,6 +177,8 @@ package_deb:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-deb"
     paths: [build_ubuntu/*.deb]
     expire_in: 1 week
+
+
 
 package_rpm:
   <<: *package_defaults
@@ -194,8 +206,8 @@ package_rpm:
   stage: package-test
   only: [main]
 
-# ----------  DEB  ----------
 package_test_deb:
+  image: ubuntu:22.04      
   <<: *package_test_defaults
   tags: [ubuntu]
   needs:
@@ -205,17 +217,15 @@ package_test_deb:
     - apt-get update -qq
   script:
     - echo "Installing DEB package…"
-    # установка пакета (может завершиться с ненулевым кодом, если не хватает зависимостей)
     - dpkg -i build_ubuntu/*.deb || true
-    # догружаем недостающие зависимости
     - apt-get -y -f install
-    # показать файлы пакета
     - PKG_NAME="$(dpkg-deb --field build_ubuntu/*.deb Package)"
     - dpkg -L "$PKG_NAME"
-    # найти первый бинарь в /usr/bin и запустить его
     - BIN="$(dpkg -L "$PKG_NAME" | grep '^/usr/bin/' | head -n1)"
     - echo "Running $BIN …"
-    - echo "2 3 4" | "$BIN"
+    - echo "2 3 4" | stdbuf -oL -eL "$BIN"
+
+
 
 # ----------  RPM  ----------
 package_test_rpm:
