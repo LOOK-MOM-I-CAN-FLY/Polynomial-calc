@@ -1,3 +1,14 @@
+/** @file polynomial.h
+ *  @brief Универсальный шаблон многочлена вида суммы a_i x^i.
+ *
+ *  Предоставляет:
+ *  - арифметику (+, –, *, /, %);
+ *  - алгоритм деления с остатком;
+ *  - экспоненту и быструю оценку значения многочлена;
+ *  - дружественный вывод в поток.
+ */
+
+
 #pragma once
 
 #include <iostream>
@@ -6,46 +17,66 @@
 #include <tuple>
 #include <algorithm>
 
-
+/// @cond INTERNAL
 using namespace std;
+/// @endcond 
+
 
 //////////////////////////////
 // polynomial.h
 //////////////////////////////
 
-// Template class for representing a polynomial with coefficients of type T.
-// The polynomial is stored as a vector of coefficients where coeffs[i] corresponds to x^i.
+
+/**
+ * @class Polynomial
+ * @tparam T тип коэффициентов (поле или кольцо с операциями +, –, *, /).
+ * @brief Класс для работы с разреженными многочленами (хранит только нужное число коэффициентов).
+ *
+ * Все операции возвращают нормализованный результат
+ * (ведущие нулевые коэффициенты автоматически отбрасываются).
+ */
 template<typename T>
 class Polynomial {
 public:
+    /**
+     * @brief Сырые коэффициенты многочлена, где coeffs[i] соответствует x^i.
+     */
     vector<T> coeffs;
     
+    /** @name Конструкторы */
+    ///@{
+    /// Конструктор по умолчанию
     Polynomial() {}
+    /// Конструктор по вектору коэффициентов
     Polynomial(const vector<T>& c): coeffs(c) {
         normalize();
     }
-    // Constructor for a constant polynomial.
+    /// Конструктор для константного многочлена
     Polynomial(T constant) : coeffs(1, constant) {
         normalize();
     }
-    
-    // Remove trailing zero coefficients.
+    ///@}
+
+
+    /// Удаляет ведущие нулевые коэффициенты
     void normalize(){
         while(!coeffs.empty() && coeffs.back() == T(0))
             coeffs.pop_back();
     }
     
-    // Degree of the polynomial (the zero polynomial has degree -1).
+    /// Возвращает степень многочлена; для нулевого многочлена -1
     int degree() const {
         return coeffs.empty() ? -1 : coeffs.size()-1;
     }
     
-    // Get the coefficient for x^i. Returns 0 if i is out of range.
+    /// Доступ к коэффициенту по индексу; возвращает 0, если индекс вне диапазона
     T operator[](int idx) const {
         return (idx < 0 || idx >= (int)coeffs.size()) ? T(0) : coeffs[idx];
     }
     
-    // Addition.
+    /** @name Арифметика */
+    ///@{
+    /// Сложение многочленов
     Polynomial operator+(const Polynomial& other) const {
         vector<T> result(max(coeffs.size(), other.coeffs.size()), T(0));
         for (size_t i = 0; i < result.size(); i++) {
@@ -61,7 +92,7 @@ public:
         return *this;
     }
     
-    // Subtraction.
+    /// Вычитание многочленов
     Polynomial operator-(const Polynomial& other) const {
         vector<T> result(max(coeffs.size(), other.coeffs.size()), T(0));
         for (size_t i = 0; i < result.size(); i++) {
@@ -77,7 +108,7 @@ public:
         return *this;
     }
     
-    // Multiplication.
+    /// Умножение многочленов
     Polynomial operator*(const Polynomial& other) const {
         if(coeffs.empty() || other.coeffs.empty())
             return Polynomial();
@@ -93,8 +124,13 @@ public:
         *this = *this * other;
         return *this;
     }
+    ///@}
     
-    // Division: returns a pair (quotient, remainder) such that A = divisor * quotient + remainder.
+    /**
+     * @brief Деление с остатком.
+     * @returns Пара {частное, остаток}, таких что исходный многочлен = делитель * частное + остаток.
+     * @throw std::runtime_error при делении на нулевой многочлен.
+     */
     pair<Polynomial, Polynomial> divmod(const Polynomial& divisor) const {
         if(divisor.coeffs.empty())
             throw runtime_error("Division by zero polynomial");
@@ -116,19 +152,19 @@ public:
         return {quotient, dividend};
     }
     
-    // Returns the quotient of the division.
+    /// Частное от деления
     Polynomial operator/(const Polynomial& divisor) const {
         return divmod(divisor).first;
     }
     
-    // Returns the remainder after division.
+    /// Остаток от деления
     Polynomial operator%(const Polynomial& divisor) const {
         return divmod(divisor).second;
     }
     
-    // Exponentiation to a nonnegative integer power.
+    /// Быстрое возведение в натуральную степень
     Polynomial pow(unsigned int exponent) const {
-        Polynomial result(T(1)); // The unit (constant) polynomial.
+        Polynomial result(T(1)); 
         Polynomial base = *this;
         while(exponent) {
             if(exponent & 1)
@@ -139,7 +175,7 @@ public:
         return result;
     }
     
-    // Evaluate the polynomial at a given value x using Horner's method.
+    /// Вычисляет значение многочлена в точке x методом Горнера
     T evaluate(const T& x) const {
         T result = T(0);
         for (int i = degree(); i >= 0; i--) {
@@ -148,7 +184,7 @@ public:
         return result;
     }
     
-    // Overload the output operator for pretty printing.
+    /// Человекочитаемый вывод, например 3*x^2 + 2*x + 1
     friend ostream& operator<<(ostream &os, const Polynomial& poly) {
         if(poly.coeffs.empty()){
             os << "0";
